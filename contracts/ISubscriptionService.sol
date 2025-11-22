@@ -15,7 +15,6 @@ interface ISubscriptionService {
      * @param topic_1 First indexed parameter filter (use REACTIVE_IGNORE for wildcard)
      * @param topic_2 Second indexed parameter filter (use REACTIVE_IGNORE for wildcard)
      * @param topic_3 Third indexed parameter filter (use REACTIVE_IGNORE for wildcard)
-     * @return subscription_id The ID of the created subscription
      */
     function subscribe(
         uint256 chain_id,
@@ -24,7 +23,7 @@ interface ISubscriptionService {
         uint256 topic_1,
         uint256 topic_2,
         uint256 topic_3
-    ) external returns (uint64 subscription_id);
+    ) external;
     
     /**
      * @notice Unsubscribe from a previously created subscription

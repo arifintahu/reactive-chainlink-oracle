@@ -24,7 +24,7 @@ contract PriceFeedReactiveContract is IReactive {
     address public destinationFeedProxy;
     
     // Subscription tracking
-    uint64 public subscriptionId;
+    address public owner;
     
     // Feed metadata
     uint8 public decimals;
@@ -51,16 +51,7 @@ contract PriceFeedReactiveContract is IReactive {
         destinationFeedProxy = _destinationFeedProxy;
         decimals = _decimals;
         description = _description;
-        
-        // Subscribe to AnswerUpdated events from Chainlink aggregator
-        subscriptionId = ISubscriptionService(SUBSCRIPTION_SERVICE).subscribe(
-            _originChainId,
-            _chainlinkAggregator,
-            uint256(ANSWER_UPDATED_TOPIC),
-            REACTIVE_IGNORE,
-            REACTIVE_IGNORE,
-            REACTIVE_IGNORE
-        );
+        owner = msg.sender;
     }
     
     /**
@@ -116,6 +107,17 @@ contract PriceFeedReactiveContract is IReactive {
             payload
         );
     }
+
+    function setupSubscription() external onlyOwner {
+        ISubscriptionService(SUBSCRIPTION_SERVICE).subscribe(
+            originChainId,
+            chainlinkAggregator,
+            uint256(ANSWER_UPDATED_TOPIC),
+            REACTIVE_IGNORE,
+            REACTIVE_IGNORE,
+            REACTIVE_IGNORE
+        );
+    }
     
     /**
      * @notice Send cross-chain message (internal helper)
@@ -132,6 +134,11 @@ contract PriceFeedReactiveContract is IReactive {
     // VM-only modifier
     modifier vmOnly() {
         require(msg.sender == address(0), "VM only");
+        _;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner");
         _;
     }
 }

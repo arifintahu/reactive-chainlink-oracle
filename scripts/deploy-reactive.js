@@ -54,15 +54,16 @@ async function main() {
     
     console.log("✓ PriceFeedReactiveContract deployed at:", reactiveContractAddress);
     
-    // Get subscription ID
-    const subscriptionId = await reactiveContract.subscriptionId();
-    console.log("✓ Subscription ID:", subscriptionId.toString());
+    const tx = await reactiveContract.setupSubscription();
+    await tx.wait();
+
+    console.log("✓ Subscription created");
     
     // Update deployment info
     deploymentInfo.contracts.reactivePriceFeed = {
         address: reactiveContractAddress,
         chain: "reactive",
-        subscriptionId: subscriptionId.toString()
+        subscription: true
     };
     
     // Save updated deployment info
@@ -77,7 +78,7 @@ async function main() {
     console.log("\nContract Addresses:");
     console.log("  Reactive Contract:", reactiveContractAddress);
     console.log("  Destination Proxy:", deploymentInfo.contracts.destinationFeedProxy.address);
-    console.log("  Subscription ID:", subscriptionId.toString());
+    console.log("  Subscription:", "created");
     
     console.log("\n" + "=".repeat(60));
     console.log("IMPORTANT: Next Steps");
