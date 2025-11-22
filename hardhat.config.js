@@ -18,32 +18,31 @@ module.exports = {
             url: process.env.SEPOLIA_RPC || "https://rpc.sepolia.org",
             accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
             chainId: 11155111,
-            gas: 5000000,
-            gasPrice: 50000000000 // 50 gwei
+            gasMultiplier: 1.2,
         },
         
         // Reactive Network Kopli Testnet
         reactive: {
-            url: process.env.REACTIVE_RPC || "https://kopli-rpc.reactive.network",
+            url: process.env.REACTIVE_RPC || "https://lasna-rpc.rnk.dev",
             accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-            chainId: 5318008,
-            gas: 10000000,
-            gasPrice: 1000000000 // 1 gwei
+            chainId: 5318007,
+            gasMultiplier: 1.2,
         },
         
         // Reactive Network Mainnet
         reactiveMainnet: {
-            url: "https://rpc.reactive.network",
+            url: "https://mainnet-rpc.rnk.dev",
             accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-            chainId: 0x220513, // To be confirmed
-            gas: 10000000
+            chainId: 1597, // To be confirmed
+            gasMultiplier: 1.2,
         },
         
         // Ethereum Mainnet
         mainnet: {
             url: process.env.MAINNET_RPC || "https://eth.llamarpc.com",
             accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-            chainId: 1
+            chainId: 1,
+            gasMultiplier: 1.2,
         },
         
         // Hardhat local network
