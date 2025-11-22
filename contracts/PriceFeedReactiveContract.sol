@@ -141,4 +141,6 @@ contract PriceFeedReactiveContract is IReactive {
         require(msg.sender == owner, "Only owner");
         _;
     }
+
+    receive() external payable {}
 }
