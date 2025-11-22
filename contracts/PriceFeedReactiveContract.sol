@@ -56,7 +56,7 @@ contract PriceFeedReactiveContract is IReactive {
         subscriptionId = ISubscriptionService(SUBSCRIPTION_SERVICE).subscribe(
             _originChainId,
             _chainlinkAggregator,
-            ANSWER_UPDATED_TOPIC,
+            uint256(ANSWER_UPDATED_TOPIC),
             REACTIVE_IGNORE,
             REACTIVE_IGNORE,
             REACTIVE_IGNORE
@@ -85,7 +85,7 @@ contract PriceFeedReactiveContract is IReactive {
         bytes calldata data,
         uint256 block_number,
         uint256 op_code
-    ) external vmOnly {
+    ) external override vmOnly {
         require(chain_id == originChainId, "Invalid origin chain");
         require(_contract == chainlinkAggregator, "Invalid aggregator");
         require(topic_0 == uint256(ANSWER_UPDATED_TOPIC), "Invalid event");
@@ -110,7 +110,7 @@ contract PriceFeedReactiveContract is IReactive {
         emit FeedUpdateRelayed(roundId, answer, updatedAt, destinationChainId);
         
         // Send to destination chain
-        IReactive(address(this)).sendMessage(
+        this.sendMessage(
             destinationChainId,
             destinationFeedProxy,
             payload

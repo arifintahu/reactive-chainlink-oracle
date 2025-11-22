@@ -33,8 +33,4 @@ interface ISubscriptionService {
     function unsubscribe(uint64 subscription_id) external;
 }
 
-/**
- * @notice The address of the Reactive Network subscription service
- * @dev This is a system contract deployed at a fixed address
- */
-address constant SUBSCRIPTION_SERVICE = 0x0000000000000000000000000000000000FFFFFF;
+address constant SUBSCRIPTION_SERVICE = 0x0000000000000000000000000000000000fffFfF;

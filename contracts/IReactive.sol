@@ -48,8 +48,4 @@ interface IReactive {
     );
 }
 
-/**
- * @notice Special constant for wildcard topic matching
- * @dev Use this value in subscribe() to match any value for a topic
- */
 uint256 constant REACTIVE_IGNORE = 0xa65f96fc951c35ead38878e0f0b7a3c744a6f5ccc1476b313353ce31712313ad;
