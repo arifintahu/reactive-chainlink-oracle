@@ -109,6 +109,32 @@ async function main() {
             allChecks.push(false);
         }
     }
+
+    // Check 3.1: Callback Proxy
+    console.log("\n3.1 Checking Callback Proxy...");
+    const CALLBACK_PROXY_BY_NETWORK = {
+        sepolia: "0xc9f36411C9897e7F959D99ffca2a0Ba7ee0D7bDA"
+    };
+    const expectedCallbackProxy = CALLBACK_PROXY_BY_NETWORK[hre.network.name];
+    if (!proxyAddress) {
+        console.log("   ⚠ Skipping (proxy not deployed)");
+    } else if (!expectedCallbackProxy) {
+        console.log("   ⚠ No known callback proxy for network:", hre.network.name);
+        allChecks.push(true);
+    } else {
+        try {
+            const proxy = await hre.ethers.getContractAt("DestinationFeedProxy", proxyAddress);
+            const currentCallbackProxy = await proxy.callbackProxy();
+            console.log("   ✓ Expected:", expectedCallbackProxy);
+            console.log("   ✓ Actual:  ", currentCallbackProxy);
+            const match = currentCallbackProxy.toLowerCase() === expectedCallbackProxy.toLowerCase();
+            console.log("   Match:", match ? "✓" : "❌");
+            allChecks.push(match);
+        } catch (error) {
+            console.log("   ❌ Error checking callback proxy:", error.message);
+            allChecks.push(false);
+        }
+    }
     
     // Check 4: Price Data
     console.log("\n4. Checking Price Data...");
