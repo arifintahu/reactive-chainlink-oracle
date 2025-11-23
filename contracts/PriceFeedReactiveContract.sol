@@ -133,7 +133,7 @@ contract PriceFeedReactiveContract is IReactive {
     
     // VM-only modifier
     modifier vmOnly() {
-        require(msg.sender == address(0), "VM only");
+        require(msg.sender == SUBSCRIPTION_SERVICE, "VM only");
         _;
     }
 

@@ -120,6 +120,9 @@ npx hardhat run scripts/deploy-reactive.js --network reactive
 
 # Configure the connection
 npx hardhat run scripts/configure.js --network sepolia
+
+# Fund reactive contract on Reactive Network
+npx hardhat run scripts/fund-reactive.js --network reactive
 ```
 
 ### 3. Fund & Verify

@@ -19,7 +19,7 @@ async function main() {
   }
 
   const [sender] = await hre.ethers.getSigners();
-  const value = hre.ethers.parseEther("0.3");
+  const value = hre.ethers.parseEther("0.1");
 
   console.log("Network:", hre.network.name);
   console.log("From:", sender.address);

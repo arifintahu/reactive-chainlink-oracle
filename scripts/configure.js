@@ -49,29 +49,54 @@ async function main() {
     console.log("\nCurrent reactive contract:", currentReactive);
     
     if (currentReactive === deploymentInfo.contracts.reactivePriceFeed.address) {
-        console.log("✓ Already configured correctly!");
-        return;
+        console.log("✓ Reactive contract already configured");
+    } else {
+        console.log("\nUpdating reactive contract address...");
+        const tx = await destinationProxy.updateReactiveContract(
+            deploymentInfo.contracts.reactivePriceFeed.address
+        );
+        console.log("Transaction hash:", tx.hash);
+        console.log("Waiting for confirmation...");
+        await tx.wait();
+        console.log("✓ Reactive contract updated");
+    }
+
+    const CALLBACK_PROXY_BY_NETWORK = {
+        sepolia: "0xc9f36411C9897e7F959D99ffca2a0Ba7ee0D7bDA"
+    };
+
+    const expectedCallbackProxy = CALLBACK_PROXY_BY_NETWORK[hre.network.name];
+    if (!expectedCallbackProxy) {
+        console.log("\n⚠ No known callback proxy for network:", hre.network.name);
+    } else {
+        const currentCallbackProxy = await destinationProxy.callbackProxy();
+        console.log("\nCurrent callback proxy:", currentCallbackProxy);
+        if (currentCallbackProxy.toLowerCase() !== expectedCallbackProxy.toLowerCase()) {
+            console.log("Updating callback proxy to:", expectedCallbackProxy);
+            const tx2 = await destinationProxy.updateCallbackProxy(expectedCallbackProxy);
+            console.log("Transaction hash:", tx2.hash);
+            console.log("Waiting for confirmation...");
+            await tx2.wait();
+            console.log("✓ Callback proxy updated");
+        } else {
+            console.log("✓ Callback proxy already configured");
+        }
     }
     
-    // Update reactive contract address
-    console.log("\nUpdating reactive contract address...");
-    const tx = await destinationProxy.updateReactiveContract(
-        deploymentInfo.contracts.reactivePriceFeed.address
-    );
-    
-    console.log("Transaction hash:", tx.hash);
-    console.log("Waiting for confirmation...");
-    
-    await tx.wait();
-    
-    console.log("✓ Configuration complete!");
+    console.log("\n✓ Configuration complete!");
     
     // Verify
     const newReactive = await destinationProxy.reactiveContract();
+    const newCallbackProxy = await destinationProxy.callbackProxy();
     console.log("\nVerification:");
-    console.log("  Expected:", deploymentInfo.contracts.reactivePriceFeed.address);
-    console.log("  Actual:  ", newReactive);
-    console.log("  Match:   ", newReactive === deploymentInfo.contracts.reactivePriceFeed.address ? "✓" : "❌");
+    console.log("  Reactive Expected:", deploymentInfo.contracts.reactivePriceFeed.address);
+    console.log("  Reactive Actual:  ", newReactive);
+    console.log("  Reactive Match:   ", newReactive === deploymentInfo.contracts.reactivePriceFeed.address ? "✓" : "❌");
+    if (expectedCallbackProxy) {
+        console.log("  Callback Expected:", expectedCallbackProxy);
+        console.log("  Callback Actual:  ", newCallbackProxy);
+        console.log("  Callback Match:   ", newCallbackProxy.toLowerCase() === expectedCallbackProxy.toLowerCase() ? "✓" : "❌");
+    }
     
     console.log("\n" + "=".repeat(60));
     console.log("Next Steps");

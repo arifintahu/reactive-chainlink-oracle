@@ -30,6 +30,7 @@ contract DestinationFeedProxy {
     // Access control
     address public reactiveContract;
     address public owner;
+    address public callbackProxy;
     
     // Events
     event AnswerUpdated(
@@ -49,8 +50,8 @@ contract DestinationFeedProxy {
         address indexed newContract
     );
     
-    modifier onlyReactive() {
-        require(msg.sender == reactiveContract, "Only reactive contract");
+    modifier onlyCallbackProxy() {
+        require(msg.sender == callbackProxy, "Only callback proxy");
         _;
     }
     
@@ -86,7 +87,7 @@ contract DestinationFeedProxy {
         uint256 startedAt,
         uint8 _decimals,
         string memory _description
-    ) external onlyReactive {
+    ) external onlyCallbackProxy {
         require(roundId > latestRound.roundId, "Round ID must increase");
         require(answer > 0, "Invalid answer");
         
@@ -191,6 +192,11 @@ contract DestinationFeedProxy {
         address oldContract = reactiveContract;
         reactiveContract = _newReactiveContract;
         emit ReactiveContractUpdated(oldContract, _newReactiveContract);
+    }
+
+    function updateCallbackProxy(address _callbackProxy) external onlyOwner {
+        require(_callbackProxy != address(0), "Invalid address");
+        callbackProxy = _callbackProxy;
     }
     
     /**
